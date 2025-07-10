@@ -10,15 +10,21 @@ export default function Login() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    const stored = localStorage.getItem("user");
+    const stored = localStorage.getItem("users");
     if (!stored) {
       setMessage("No user found. Please register first.");
       return;
     }
-    const { username: storedUser, password: storedPass } = JSON.parse(stored);
-    if (username === storedUser && password === storedPass) {
+
+    const users = JSON.parse(stored);
+    const user = users.find(
+      (u) => u.username === username && u.password === password
+    );
+
+    if (user) {
       setMessage("Login successful!");
-      // Redirect or set auth state here
+      localStorage.setItem("currentUser", JSON.stringify(user));
+      setTimeout(() => router.push("/home"), 1200);
     } else {
       setMessage("Invalid credentials.");
     }
@@ -100,8 +106,7 @@ export default function Login() {
         style={{
           textAlign: "center",
           marginTop: 16,
-          color:
-            message === "Login successful!" ? "#16a34a" : "#dc2626",
+          color: message === "Login successful!" ? "#16a34a" : "#dc2626",
         }}
       >
         {message}

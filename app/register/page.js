@@ -14,10 +14,20 @@ export default function Register() {
       setMessage("Please fill all fields.");
       return;
     }
-    localStorage.setItem(
-      "user",
-      JSON.stringify({ username, password })
-    );
+
+    // Get existing users or initialize as empty array
+    const users = JSON.parse(localStorage.getItem("users") || "[]");
+
+    // Check if username already exists
+    if (users.some((u) => u.username === username)) {
+      setMessage("Username already exists.");
+      return;
+    }
+
+    // Add new user
+    users.push({ username, password });
+    localStorage.setItem("users", JSON.stringify(users));
+
     setMessage("Registration successful! Redirecting to login...");
     setTimeout(() => router.push("/login"), 1500);
   };
